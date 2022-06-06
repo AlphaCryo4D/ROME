@@ -1,0 +1,9 @@
+#define exit		USE_EXIT_ABNORMALLY_instead_of_exit
+#define new			USE_sNew_or_vNew_instead_of_new
+#define delete		USE_sDelete_or_vDelete_instead_of_delete
+#define malloc		USE_aMalloc_instead_of_malloc
+#define free		USE_aFree_instead_of_free
+#define _mm_malloc	USE_aMalloc_instead_of_mm_malloc
+#define _mm_free	USE_aMalloc_instead_of_mm_free
+#define _aligned_free   USE_aFree_instead_of_aligned_free
+#define _aligned_malloc USE_aMalloc_instead_of_aligned_free

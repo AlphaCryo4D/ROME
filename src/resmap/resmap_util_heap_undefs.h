@@ -1,0 +1,9 @@
+#undef exit
+#undef new    
+#undef delete
+#undef malloc
+#undef free
+#undef _mm_malloc
+#undef _mm_free
+#undef _aligned_free 
+#undef _aligned_malloc
