@@ -1,0 +1,128 @@
+----------------------------------------------------------------------
+ROME is developed by Intel Parallel Computing Center for Structural 
+Biology at Dana-Farber Cancer Institute, Harvard Medical School,
+in association with Peking University. For more information, please 
+visit:
+http://ipccsb.dfci.harvard.edu/rome
+----------------------------------------------------------------------
+ROME is an OPEN SOURCE program distributed under the General Public 
+license. Please see the LICENSE file for additional information.
+----------------------------------------------------------------------
+See INSTALL for installation instructions
+----------------------------------------------------------------------
+ROME has the following external dependencies:
+  1. Intel MKL
+  
+ROME GUI has the following external dependencies:
+  1. Python
+  2. Pillow
+  3. numpy
+  4. scipy
+
+----------------------------------------------------------------------
+The ROME Team:
+
+NOTE: though IPCCSB specifically develops and  maintains the ROME code 
+base, the project can only continue to move forward through the sponsorship 
+and participation of the broader community.
+
+   Founder and Principal Author:
+
+      Youdong Jack Mao 
+
+   Algorithmic Implementation:
+
+      Jiayi Wu
+      Yong-Bei Ma
+      Yingping Ma
+   
+   Code Optimization:
+
+      Charles Condgon
+      Bevin Brett
+
+----------------------------------------------------------------------
+Disclaimer:
+
+The source codes of ROME either contain or are derived from pieces of 
+codes from the following packages.
+
+RELION: http://www2.mrc-lmb.cam.ac.uk/relion/
+XMIPP: http:/xmipp.cnb.csic.es
+BSOFT: http://lsbr.niams.nih.gov/bsoft/
+SPIDER: http://spider.wadsworth.org/
+HEALPIX: http://healpix.jpl.nasa.gov/
+
+Original disclaimers in the code of these external packages have been 
+maintained as much as possible. Please contact Youdong Mao 
+(Youdong_Mao@DFCI.HARVARD.EDU) if you feel this has not been done correctly. 
+
+----------------------------------------------------------------------
+ROME 1.1.0 (March 29, 2017):
+
+Unsupervised deep 2D classification is introduced. It implementes:
+1) Adaptive MAP-based image alignment and classification;
+2) SML based on GTM adapted to Fourier space;
+3) Deep2D protocol that combines MAP alignment with SML classification.
+
+The SML/Deep2D principle and method are documented in:
+J. Wu, Y. Ma, C. Condgon, B. Brett, S. Chen, Q. Ouyang, Y. Mao. 
+Unsupervised single-particle deep classification via statistical manifold 
+learning. arXiv:1604.04539 [physics.data-an] (2016).
+
+Unsupervised 3D classification based on adaptive MAP method is implemented 
+with optimization toward many-core CPU architecture.
+
+The adaptive MAP method was documented in:
+Sigworth, F.J. A maximum-likelihood approach to single-particle image 
+refinement. J Struct Biol 122, 328-339 (1998).
+Scheres, S.H. Maximum-likelihood Multi-reference Refinement for Electron 
+Microscopy Images. J Mol Biol 348, 139-149 (2005).
+Tagare, H.D., Barthel, A. & Sigworth, F.J. An adaptive Expectation-Maximization 
+algorithm with GPU implementation for electron cryomicroscopy. 
+J Struct Biol 171, 256-265 (2010).
+Scheres, S.H. A Bayesian view on cryo-EM structure determination. 
+J Mol Biol 415, 406-418 (2012).
+
+
+ROME 1.1.2 (March 29, 2019):
+
+This minor update adds a few new programs based on previous version:
+1) A C++ implementation of ResMap with parallelization;
+2) A parallelized implementation of standalone 3D reconstruction program;
+
+The following bugs have been addressed at least partly in this new version:
+1.  Minor memory issue during loading a large input stack file is solved;
+2.	Fixed some input and output bugs;
+3.	Fixed some OMP and memory bugs;
+4.	Fixed an image read bug and a metadata access bug;
+5.	Select direction from prior angle;
+6.	Fixed some bugs in the reconstruction program;
+7.	Added Mask option in ROME 2D and 3D classification program;
+8.	Bypassed some local searching and only select non-zero probabilities
+    while sorting, to speedup the 3D reconstructions;
+9.	Removed ScaleCorrection output in star file, and added all relion 
+    metadata labels, to be compatible with RELION.
+
+
+----------------------------------------------------------------------
+Specific Acknowledgments:
+
+* Thanks to Kristina M. Kermanshache for advocate of Intel sponsorship,
+collaboration, corporate coordination and many help in project development.
+
+* Thanks to Mark Begley and Michael Moretti for help in obtaining Intel 
+software development tools.
+
+* Thanks to Ram Ramanujam for project coordination.
+
+* Thanks to Clay Breshears and David S. Scott for helpful discussion.
+
+* Thanks to Hao Wu, Liman Zhang and Yang Li in early adoption of ROME in 
+their research work.
+
+* Thanks to Shuobing Chen and Yanan Zhu for help in testing ROME.
+
+* Thanks to Jonathon Jackson and Tao Song in configuration and maintenance 
+of the testing cluster system.
+

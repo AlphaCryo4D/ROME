@@ -1,0 +1,197 @@
+
+----------------------------------------------------------------------
+INSTALLATION VIA COMPILATION 
+----------------------------------------------------------------------
+
+There is currently only one officially-supported approach for building
+and installing ROME from the open-source code:2
+
+Make sure that you have installed Intel C++ complier, Intel mkl library 
+and Intel MPI library. To install ROME, the first step is loading your 
+intel complier, for example:
+
+source /apps/mpss/intel_parallel_2015/composer_xe_2015.1.133/bin/compilervars.sh intel64
+source /apps/mpss/intel_parallel_2015/impi/5.0.2.044/bin64/mpivars.sh
+
+To build ROME, unzip rome1.1.2.zip and go into folder first:
+
+unzip rome1.1.2.zip
+cd rome1.1.2
+
+or building ROME with “mpiicpc” complier, using:
+
+make
+
+If you bind your Intel C++ complier with other MPI implementation like “mpicxx”, using:
+
+export ROME_CC=mpicxx
+make
+
+If you want to build ROME with Non-MPI (single node), using:
+
+export ROME_CC=icpc
+make
+
+If you want to compile ROME with the OFFLOAD mode for Intel Knight Corner coprocessors:
+
+export ROME_OFFLOAD=true
+export ROME_CC=mpiicpc
+make
+
+The binary file will be generated in floder “/bin”.
+
+Type:
+./bin/rome_deep2d -help
+to retrieve usage information.
+
+Notice:if you want to rebuild the code,you need to clean first
+make clean
+
+Good luck!
+
+----------------------------------------------------------------------
+INSTALLATION VIA GIT 
+----------------------------------------------------------------------
+
+Install git on your system
+
+Create a repository on your system
+
+    mkdir repos
+    cd repos
+    git clone https://github.com/Ashlee1994/rome1.1.2.git
+
+
+To build
+    Linux
+        Set up the compiler etc. One of
+            source /opt/intel/composerxe/bin/compilervars.csh intel64
+            source /opt/intel.2016/compilers_and_libraries/linux/bin/compilervars.csh intel64
+
+        Change to the directory
+            cd rome1.1.2
+
+        Make the build output directories
+        mkdir bin 
+        
+        To build MAP:    
+            One of
+                make -kj4 DEBUG="-debug all" rome_map2d 
+                make -kj4 rome_map2d
+                make -kj4 rome_map3d
+                make -kj4 TBB="-ltbbmalloc_proxy" rome_map2d
+
+                # Set LD_PRELOAD to load the release version of the proxy library
+                LD_PRELOAD=libtbbmalloc_proxy.so.2 
+                # Link with the release version of the proxy library
+                g++ foo.o bar.o -ltbbmalloc_proxy -o a.out
+
+        To build GTM:
+                make -kj4 rome_sml
+
+        To build both GTM and MAP:
+                make
+
+
+To run
+    The command line should be something based on this pattern
+        -i INPUTFILE -o OUTPUTFILE -k NUMBER OF CLASSES -iter -pixel TBD -pool TBD
+    or on this pattern
+        -unittest NAME
+			-unittest MLOptimizer_Kernel_correctness
+            -unittest MLOptimizer_Kernel_performance
+            NAME such as shiftImageInFourierTransformUnitTestCorrectness
+
+	There are test data and scripts in the testdata_2d and testdata_3d subdirectories
+
+    Linux
+        command line which takes 30 secs .. 1 min to run...
+            bin/rome_map2d -i testdata_2d/data8_160/data8_160  -o NULL -k 20 -pixel 4. -iter 10 -pool  30 > testdata_2d/data8_160/emit_test_output_stab.txt
+        
+        running map 3d...
+            cd testdata_3d/pdh,testdata_3d/TMV,...
+            sh relion_3d.sh // run for relion refine
+            sh rome_3d.sh // run for rome ml3d
+            result file will be output at refine folder
+            use diff to compare the output *.star file
+            or _debug.txt to verify each step result.
+
+	Checkpoint restart
+		-i ../../testdata_2d/data8_160/data8_160 -o ../../testdata_2d/data8_160/data8_160_output -k 20 -pixel 4. -iter 1 -pool 30 
+		-i ../../testdata_2d/data8_160/data8_160_output_iter001 -o NULL -continue 1              -k 20 -pixel 4. -iter 2 -pool 30 
+		[Currently seems to crash because of -ve indefinites, not yet debugged]
+
+	Test output (use when src\map2d_optimizer_base.h is selecting emit_test_output)
+		-i ../../testdata_2d/data8_160/data8_160 -o NULL -k 20 -pixel 4. -iter 3 -pool 30 
+
+    Guidance support for making tests more deterministic
+		Create the guide
+			-i ../../testdata_2d/data8_160/data8_160 -o ../../testdata_2d/data8_160/guidance/data8_160_output -k 20 -pixel 4. -iter 5 -pool 30 
+		Use the guide
+			-i ../../testdata_2d/data8_160/data8_160 -o NULL -k 20 -pixel 4. -iter 5 -pool 30 -testguidance ../../testdata_2d/data8_160/guidance/data8_160_output
+
+	Tandem execution (use when src\map2d_optimizer_base.h is selecting both the new and the original versions)
+		-i ../../testdata_2d/data8_160/data8_160 -o NULL -k 20 -pixel 4. -iter 3 -pool 30 
+
+To debug on Linux
+    gdb bin/rome_map2d 
+    run -i testdata_2d/data8_160/data8_160  -o NULL -k 20 -pixel 4. -iter 10 -pool  30 > testdata_2d/data8_160/emit_test_output_stab.txt
+
+To collect Amplifier data
+    Linux
+        source /opt/intel.2016/vtune_amplifier_xe/amplxe-vars.csh
+        amplxe-gui &
+        
+            new project
+            
+            Analysis Target
+                application:    /home/nsl/brbrett/project/DanaFaber/repos/ROME2D/bin/rome_map2d
+                App params:     -i testdata_2d/data8_160/data8_160  -o NULL -k 20 -pixel 4. -iter 10 -pool  30
+                Working dir:    /home/nsl/brbrett/project/DanaFaber/repos/ROME1.1
+            
+            Analysis Type
+                Basic Hotspots
+            
+            Start
+                Output goes to the terminal window
+                Takes about 30 seconds
+                The only change in the amplixe-gui is the elapsed time ticking
+            
+        rm -rf r000hs1 ; amplxe-cl -collect hotspots -r r000hs1 bin/rome_map2d -i testdata_2d/data8_160/data8_160  -o NULL -k 20 -pixel 4. -iter 10 -pool  30 > testdata_2d/data8_160/emit_test_output_stab.txt     
+                
+        amplxe-gui r000hs1/*.amp* &
+
+To collect FTrace data
+    Linux
+        rm -rf r000hs1 ; amplxe-cl -collect hotspots -r r000hs1 bin/rome_map2d -i testdata_2d/data8_160/data8_160 -o NULL -k 20 -pixel 4. -iter 10 -pool 30 -checker_ftrace testdata_2d/data8_160/ftrace.txt > testdata_2d/data8_160/emit_test_output_stab.txt
+        amplxe-gui r000hs1/*.amp* &
+        
+Testing source changes
+    1)map2d_original and map2d_new
+    map2d_optimizer_base.h has the following line
+        static const bool emit_test_output_possible = true;
+    and some simple functions
+    which causes it to output data that lets the comparison of these to be useful
+        testdata_2d/data8_160/emit_test_output.txt 
+        testdata_2d/data8_160/emit_test_output_stab.txt
+    2)use -datastream_out and -datastream_in
+    map2d_old and map3d_old both base on RELION1.4,set data_stream_out_fn variable in RELION ml_optimiser.h,build and run with '--j 1',that will write 
+    datastream file to disk,then for map2d(3d) ,build with NO-openmp and set '-pool 1 -datastream_in relion_datastream_name' ,run and the datastream 
+    system will compare the result with the input datastream file.this means the RELION with '--j 1' and NO-openmp map2d(3d) with '-pool 1' will produce 
+    totaly same result.
+    3)compare the result star file or testguidence file
+    example:go to testdata_3d/1xck
+    run relion_3d.sh and rome_3d.sh,then compare_3d.sh 10,it will compare the 10th star file
+
+Commiting changes locally
+    git status
+    git add FILES
+    git commit -m "COMMENT"
+
+
+Push to Bitbucket
+    git push origin master
+
+    
+Pull the latest changes
+    git pull --all
