@@ -1,6 +1,17 @@
 ----------------------------------------------------------------------
-ROME is developed by Intel Parallel Computing Center for Structural 
-Biology at Dana-Farber Cancer Institute in association with Peking University. 
+The ROME (Refinement and Optimization via Machine lEarning for cryo-EM) 
+software package is a parallel computing software system dedicated for 
+high-resolution cryo-EM structure determination and data analysis, which 
+implements advanced machine learning approaches in modern computer 
+sciences and runs natively in an HPC environment. The ROME 1.0 introduces 
+SML (statistical manifold learning)-based deep classification following 
+MAP-based image alignment. It also implemented traditional unsupervised 
+MAP-based classification and includes several useful tools, such as 2D 
+class averaging with CTF (contrast transfer function) correction and a 
+convenient GUI for curation, inspection and verification of single-particle 
+classes. The ROME system has be optimized on both Intel® Xeon multi-core 
+CPUs and Intel® Xeon Phi many-core coprocessors. 
+
 For more information, please visit:
 https://github.com/AlphaCryo4D/rome
 ----------------------------------------------------------------------
